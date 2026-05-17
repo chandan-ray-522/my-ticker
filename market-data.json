@@ -1,1 +1,19 @@
-[]
+{
+  "body": [
+    {
+      "symbol": "NIFTY",
+      "regularMarketPrice": 24850.25,
+      "regularMarketChangePercent": 1.25
+    },
+    {
+      "symbol": "SENSEX",
+      "regularMarketPrice": 82100.55,
+      "regularMarketChangePercent": -0.45
+    },
+    {
+      "symbol": "BANKNIFTY",
+      "regularMarketPrice": 55200.10,
+      "regularMarketChangePercent": 0.88
+    }
+  ]
+}
