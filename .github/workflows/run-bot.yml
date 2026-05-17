@@ -1,0 +1,48 @@
+name: Market Auto Update
+
+on:
+
+  schedule:
+
+    - cron: "*/30 4-10 * * 1-5"
+
+  workflow_dispatch:
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+
+        with:
+          node-version: 18
+
+      - run: npm install
+
+      - name: Run Market Bot
+
+        env:
+          RAPIDAPI_KEY:
+            ${{ secrets.RAPIDAPI_KEY }}
+
+        run: node index.js
+
+      - name: Commit Updated JSON
+
+        run: |
+
+          git config user.name "github-actions"
+
+          git config user.email "actions@github.com"
+
+          git add market-data.json
+
+          git diff --quiet && git diff --staged --quiet || git commit -m "Market Update"
+
+          git push
