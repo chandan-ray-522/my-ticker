@@ -5,13 +5,10 @@ on:
     types: [run-bot]
 
 jobs:
-
   build:
-
     runs-on: ubuntu-latest
 
     steps:
-
       - uses: actions/checkout@v4
 
       - uses: actions/setup-node@v4
@@ -29,9 +26,7 @@ jobs:
         run: |
           git config --global user.name "github-actions"
           git config --global user.email "actions@github.com"
-
           git add market-data.json
-
           git diff --cached --quiet || git commit -m "Auto market update"
-
+          git pull --rebase origin main
           git push
