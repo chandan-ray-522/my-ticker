@@ -54,10 +54,12 @@ async function run() {
         const response = await axios.get(
             "https://mboum-finance.p.rapidapi.com/v1/markets/quotes",
             {
-                params: {
-                    symbol:
-"^NSEI,^NSEBANK,^BSESN,^INDIAVIX,NIFTY_FIN_SERVICE.NS,NIFTY_MID_SELECT.NS,NIFTY_NEXT_50.NS,NIFTY100.NS,NIFTY200.NS,NIFTY500.NS,NIFTY_AUTO.NS,NIFTY_IT.NS,NIFTY_FMCG.NS,NIFTY_PHARMA.NS,NIFTY_METAL.NS,NIFTY_ENERGY.NS,NIFTY_REALTY.NS,NIFTY_PSU_BANK.NS,NIFTY_PVT_BANK.NS,NIFTY_MEDIA.NS"
-                },
+params: {
+    symbols:
+"^NSEI,^NSEBANK,^BSESN,^INDIAVIX,NIFTY_FIN_SERVICE.NS,NIFTY_MID_SELECT.NS,NIFTY_NEXT_50.NS,NIFTY100.NS,NIFTY200.NS,NIFTY500.NS,NIFTY_AUTO.NS,NIFTY_IT.NS,NIFTY_FMCG.NS,NIFTY_PHARMA.NS,NIFTY_METAL.NS,NIFTY_ENERGY.NS,NIFTY_REALTY.NS,NIFTY_PSU_BANK.NS,NIFTY_PVT_BANK.NS,NIFTY_MEDIA.NS",
+
+    type: "INDEX"
+},
 
                 headers: {
                     "x-rapidapi-key": process.env.RAPIDAPI_KEY,
