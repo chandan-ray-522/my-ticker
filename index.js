@@ -1,23 +1,17 @@
 const axios = require("axios");
 const fs = require("fs");
-
 const holidays = require("./holidays.json");
 
 async function run() {
-
     const now = new Date();
-
     const indiaTime = new Date(
         now.toLocaleString("en-US", { timeZone: "Asia/Kolkata" })
     );
 
     const day = indiaTime.getDay();
-
     const currentDate = indiaTime.toISOString().split("T")[0];
-
     const hours = indiaTime.getHours();
     const minutes = indiaTime.getMinutes();
-
     const totalMinutes = hours * 60 + minutes;
 
     // MARKET TIME: 9:30 AM → 3:35 PM
@@ -44,50 +38,46 @@ async function run() {
 
     // RANDOM DELAY (5–10 MIN)
     const delay = Math.floor(Math.random() * 300) + 300;
-
     console.log(`Waiting ${delay} seconds...`);
-
     await new Promise(r => setTimeout(r, delay * 1000));
 
     try {
-
         const response = await axios.get(
             "https://mboum-finance.p.rapidapi.com/v1/markets/quotes",
             {
-params: {
-    symbols:
-"^NSEI,^NSEBANK,^BSESN,^INDIAVIX,NIFTY_FIN_SERVICE.NS,NIFTY_MID_SELECT.NS,NIFTY_NEXT_50.NS,NIFTY100.NS,NIFTY200.NS,NIFTY500.NS,NIFTY_AUTO.NS,NIFTY_IT.NS,NIFTY_FMCG.NS,NIFTY_PHARMA.NS,NIFTY_METAL.NS,NIFTY_ENERGY.NS,NIFTY_REALTY.NS,NIFTY_PSU_BANK.NS,NIFTY_PVT_BANK.NS,NIFTY_MEDIA.NS",
-
-    type: "INDEX"
-},
-
+                params: {
+                    // यहाँ 'symbols' की जगह सही पैरामीटर 'symbol' कर दिया गया है
+                    // और 'type: "INDEX"' को हटा दिया गया है क्योंकि वह API में एरर दे रहा था
+                    symbol: "^NSEI,^NSEBANK,^BSESN,^INDIAVIX,NIFTY_FIN_SERVICE.NS,NIFTY_MID_SELECT.NS,NIFTY_NEXT_50.NS,NIFTY100.NS,NIFTY200.NS,NIFTY500.NS,NIFTY_AUTO.NS,NIFTY_IT.NS,NIFTY_FMCG.NS,NIFTY_PHARMA.NS,NIFTY_METAL.NS,NIFTY_ENERGY.NS,NIFTY_REALTY.NS,NIFTY_PSU_BANK.NS,NIFTY_PVT_BANK.NS,NIFTY_MEDIA.NS"
+                },
                 headers: {
                     "x-rapidapi-key": process.env.RAPIDAPI_KEY,
                     "x-rapidapi-host": "mboum-finance.p.rapidapi.com",
-
-                    "User-Agent":
-                        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36",
-
+                    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36",
                     "Accept": "application/json",
-
                     "Accept-Language": "en-US,en;q=0.9",
-
                     "Referer": "https://www.google.com/"
                 }
             }
         );
 
+        // वेबसाइट पर 0.00 की समस्या को ठीक करने के लिए JSON को सही फॉर्मेट में लाना
+        let marketData = response.data;
+        if (marketData && marketData.body) {
+            marketData = marketData.body;
+        } else if (marketData && marketData.quoteResponse && marketData.quoteResponse.result) {
+            marketData = marketData.quoteResponse.result;
+        }
+
         fs.writeFileSync(
             "market-data.json",
-            JSON.stringify(response.data, null, 2)
+            JSON.stringify(marketData, null, 2)
         );
 
         console.log("Market data updated successfully!");
 
     } catch (error) {
-
-        console.error(error.message);
-
+        console.error("API Error:", error.message);
     }
 }
 
